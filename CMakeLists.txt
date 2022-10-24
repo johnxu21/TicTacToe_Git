@@ -1,7 +1,19 @@
-cmake_minimum_required(VERSION 3.15)
-project(TicTacToe)
+cmake_minimum_required(VERSION 3.6)
+project(TicTacToe_Git)
 
-set(CMAKE_CXX_STANDARD 14)
+# Incorporating Into An Existing CMake Project
+# CMake to download GoogleTest as part of the build's configure step.
+include(FetchContent)
+FetchContent_Declare(
+        googletest
+        # Specify the commit you depend on and update it regularly. (latest googletest commit - October 19, 2022)
+        URL https://github.com/google/googletest/archive/e07617d6c692a96e126f11f85c3e38e46b10b4d0.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+# Linking against gtest
 
 # Set source files for RELEASE target
 set(RELEASE_SOURCE_FILES
@@ -11,7 +23,6 @@ set(RELEASE_SOURCE_FILES
         TicTacToeUtils.h
         TicTacToe.h
         TicTacToeImporter.h
-
         tinystr.cpp
         tinyxml.cpp
         tinyxmlerror.cpp
@@ -22,7 +33,7 @@ set(RELEASE_SOURCE_FILES
         TicTacToeExporter.cpp
         TicTacToeMain.cpp)
 
-add_executable(TicTacToeMain ${RELEASE_SOURCE_FILES})
+add_executable(ttt ${RELEASE_SOURCE_FILES})
 
 # Set source files for TEST target
 set(TEST_SOURCE_FILES
@@ -32,7 +43,6 @@ set(TEST_SOURCE_FILES
         TicTacToeUtils.h
         TicTacToe.h
         TicTacToeImporter.h
-
         tinystr.cpp
         tinyxml.cpp
         tinyxmlerror.cpp
@@ -44,11 +54,11 @@ set(TEST_SOURCE_FILES
         TicTacToeTests.cpp)
 
 # Create TEST target
-add_executable(TicTacToeTests ${TEST_SOURCE_FILES})
+add_executable(ttt_debug ${TEST_SOURCE_FILES})
 
 
-# googletest subproject
-add_subdirectory(googletest)
-include_directories(googletest/googletest/include)
-# Specify that Tests relies on "gtest" Link library
-target_link_libraries(TicTacToeTests gtest)
+# Link library
+target_link_libraries(ttt_debug gtest)
+
+file(COPY testOutput DESTINATION .)
+file(COPY testInput DESTINATION .)
